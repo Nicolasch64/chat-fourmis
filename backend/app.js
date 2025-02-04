@@ -54,7 +54,9 @@ io.on("connection", async (socket) => {
     });
 
     socket.on("disconnect", () => {
-      const disconnectedId = activeUsers.findIndex(socket.id);
+      const disconnectedId = activeUsers.findIndex(
+        (userId) => userId == socket.id
+      );
       activeUsers.splice(disconnectedId, 1);
       console.log(`A user ${socket.id} disconnected`);
     });
