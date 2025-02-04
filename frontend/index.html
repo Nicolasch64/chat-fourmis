@@ -8,7 +8,7 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<h1>Chat pour les passionnés de Fourmis</h1>
+		<h1>Chat pour les Passionnés de Fourmis</h1>
 
 		<div class="chat-box">
 			<div class="messages" id="messages"></div>
@@ -18,8 +18,37 @@
 				<button onclick="sendMessage()">Envoyer</button>
 			</div>
 		</div>
-		<img src="image/fourmi.jpg" alt="Une image de fourmis" width="500" />
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			const socket = io();
 
-		<script></script>
+			socket.on("previousMessages", (messages) => {
+				const messagesDiv = document.getElementById("messages");
+				messages.forEach((message) => {
+					const messageElem = document.createElement("div");
+					messageElem.textContent = `${message.username}: ${message.content}`;
+					messagesDiv.appendChild(messageElem);
+				});
+			});
+
+			socket.on("newMessage", (message) => {
+				const messagesDiv = document.getElementById("messages");
+				const messageElem = document.createElement("div");
+				messageElem.textContent = `${message.username}: ${message.content}`;
+				messagesDiv.appendChild(messageElem);
+			});
+
+			function sendMessage() {
+				const username = document.getElementById("username").value;
+				const message = document.getElementById("message").value;
+
+				if (username && message) {
+					socket.emit("chatMessage", { username, content: message });
+					document.getElementById("message").value = "";
+				} else {
+					console.log("Veuillez entrer un nom d'utilisateur et un message.");
+				}
+			}
+		</script>
 	</body>
 </html>
