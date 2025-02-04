@@ -1,28 +1,45 @@
 const express = require('express')
-const mongoose = require('mongoose')
+const User = require('../models/user')
 const router = express.Router()
 // register user :
 router.post('/register', async (req, res) => {
     if (!req.body?.username ||
-        !req.body?.email ||
-        !req.body?.password) {
+        !req.body?.email) {
         res.status(400).json({ message: 'invalid request' })
     }
-    const { username, email, password } = req.body;
-    console.log({ username, email, password, id: 200 });
+    try {
+        const { username, email } = req.body;
+        const user = new User({ username, email });
+        const savedUser = await user.save();
+        res.status(201).json({ message: `user has been created`, savedUser })
+    } catch (err) {
+        console.error(err);
+    }
 
-    res.status(200).json({ message: `user has been created` })
 })
 // get user
 router.get('/user/:user_id', async (req, res) => {
-    const user_id = req.params;
-    // mongo
-    const user = `USER ${user_id.user_id}`
-    res.send(user)
+    try {
+        const { user_id } = req.params;
+        console.log(user_id);
+
+        const user = await User.findById(user_id)
+        res.send(user)
+    } catch (err) {
+        console.error(err);
+    }
+
 })
 // update socket state
 router.put('/socket', async (req, res) => {
-    res.send('online')
+    try {
+        const { socket, user_id } = req.body;
+        const updatedUser = await User.findByIdAndUpdate(user_id, { $set: { socketId: socket } }, { new: true });
+        res.send(updatedUser)
+    } catch (err) {
+        console.error(err);
+    }
+
 })
 
 
