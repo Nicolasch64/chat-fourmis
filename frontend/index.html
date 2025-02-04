@@ -22,41 +22,24 @@
 		<script src="http://localhost:3004/socket.io/socket.io.js"></script>
 
 		<script>
-			const socket = io();
+			const button1 = document.getElementById("sendButton");
 
-			socket.on("previousMessages", (messages) => {
-				const messagesDiv = document.getElementById("messages");
-				messages.forEach((message) => {
-					const messageElem = document.createElement("div");
-					messageElem.classList.add("message");
-					messageElem.textContent = `${message.username}: ${message.content}`;
-					messagesDiv.appendChild(messageElem);
-				});
-			});
-
-			socket.on("newMessage", (message) => {
-				console.log("Message reçu du serveur:", message);
-				const messagesDiv = document.getElementById("messages");
-				const messageElem = document.createElement("div");
-				messageElem.textContent = `${message.username}: ${message.content}`;
-				messagesDiv.appendChild(messageElem);
-				messagesDiv.scrollTop = messagesDiv.scrollHeight;
-			});
-
-			function sendMessage() {
+			button1.addEventListener("click", () => {
 				const username = document.getElementById("username").value;
 				const message = document.getElementById("message").value;
 
+				console.log("nom d'utilisateur ", username);
+				console.log("Message", message);
+
 				if (username && message) {
+					const socket = io();
 					socket.emit("chatMessage", { username, content: message });
+					document.getElementById("username").value = "";
 					document.getElementById("message").value = "";
 				} else {
 					console.log("Veuillez entrer un nom d'utilisateur et un message.");
 				}
-			}
-			document
-				.getElementById("sendButton")
-				.addEventListener("click", sendMessage);
+			});
 		</script>
 	</body>
 </html>
