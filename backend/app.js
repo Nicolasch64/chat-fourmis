@@ -2,17 +2,27 @@ const { Socket } = require("dgram");
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
+const cors = require("cors");
 
 const userRoutes = require("./Routes/userRoutes");
 const chatRoutes = require("./Routes/chatRoutes");
 const messageRoutes = require("./Routes/messageRoutes");
 
 const app = express();
-const port = 3000;
+const port = 3260;
 const server = http.createServer(app);
-const io = new Server(server);
 
 app.use(express.json());
+app.use(cors());
+
+let activeUsers = [];
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://127.0.0.1:5500",
+    methods: ["GET", "POST"],
+  },
+});
 
 app.use("/messages", messageRoutes);
 app.use("/chat", chatRoutes);
@@ -21,9 +31,10 @@ app.use("/users", userRoutes);
 io.on("connection", async (socket) => {
   try {
     console.info(`connection pour ${socket.id}`);
-
+    activeUsers.push(socket.id);
+    console.info(`utilisateurs actif: ${activeUsers}`);
     socket.on("chat message", (data) => {
-      console.log(`message from ${socket.id} to ${data.targetSocketId}`);
+      console.log(`message from ${socket.id} : ${data.content}`);
       //ici logique pour engregistrer une message sur base de donnees
       if (data.targetSocketId) {
         io.to(data.targetSocketId).emit("chat message", {
@@ -38,6 +49,8 @@ io.on("connection", async (socket) => {
     });
 
     socket.on("disconnect", () => {
+      const disconnectedId = activeUsers.findIndex(socket.id);
+      activeUsers.splice(disconnectedId, 1);
       console.log(`A user ${socket.id} disconnected`);
     });
   } catch (err) {
@@ -46,5 +59,5 @@ io.on("connection", async (socket) => {
 });
 
 server.listen(port, () => {
-  console.info("serveur demaree", "http://localhost:3000");
+  console.info("serveur demaree", "http://localhost:3260");
 });
