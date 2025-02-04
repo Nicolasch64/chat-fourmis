@@ -6,7 +6,7 @@ const Chat = require('../models/chat');
 
 router.get('/chat/:chat_id', async (req, res) => {
     const { chat_id } = req.params;
-    const chat = await findById(chat_id)
+    const chat = await Chat.findById(chat_id)
     console.log(chat_id);
     res.send(chat)
 })
