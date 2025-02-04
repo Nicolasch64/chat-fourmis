@@ -53,12 +53,22 @@ io.on("connection", async (socket) => {
       //logique pour plusieurs
     });
 
+    socket.on("chat message", (data) => {
+      const { author, message } = data;
+      io.emit("chat message", {
+        userId: socket.id,
+        message: message,
+      });
+    });
+
     socket.on("disconnect", () => {
       const disconnectedId = activeUsers.findIndex(
         (userId) => userId == socket.id
       );
       activeUsers.splice(disconnectedId, 1);
-      console.log(`A user ${socket.id} disconnected`);
+      console.log(
+        `A user ${socket.id} disconnected, active users: ${activeUsers}`
+      );
     });
   } catch (err) {
     console.error("err");
