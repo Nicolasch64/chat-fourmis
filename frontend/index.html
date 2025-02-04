@@ -1,7 +1,6 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="fr">
-<<<<<<< HEAD
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,18 +10,6 @@
   </head>
   <body>
     <h1>Chat pour les Passionné(e)s de Fourmis</h1>
-=======
-
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Chat des Fourmis</title>
-		<link rel="stylesheet" href="style.css" />
-	</head>
-
-	<body>
-		<h1>Chat pour les Passionné(e)s de Fourmis</h1>
->>>>>>> 8827ce718fa9a0f03843d250e3df4413737317a6
 
     <div class="chat-box">
       <div class="messages" id="messages"></div>
@@ -33,23 +20,31 @@
       </div>
     </div>
     <script>
-      document
-        .getElementById("sendButton")
-        .addEventListener("click", sendMessage);
+      const loadMsg = (author, content) => {
+        const newMessage = document.createElement("div");
+        newMessage.innerHTML = `<style> .message {border: 2px solid}</style><div class = "message"><div><h3>${author}</h3></div>${content}</div>`;
+        const messages = document.getElementById("messages");
+        messages.appendChild(newMessage);
+      };
     </script>
     <script>
       const socket = io("http://localhost:3260");
 
       socket.on("connect", () => {
         console.log("Connected to server:", socket.id);
+        loadMsg("artem", "i love ants !!!! <33333");
       });
 
       socket.on("connect_error", (err) => {
         console.error("Connection error:", err);
       });
+
+      socket.on("chat message", (data) => {
+        console.log("Message received:", data);
+
+        loadMsg(data.userId, data.message);
+      });
       //to work
     </script>
   </body>
-
 </html>
-
