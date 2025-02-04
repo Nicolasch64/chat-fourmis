@@ -1,62 +1,40 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="fr">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Chat des Fourmis</title>
-		<link rel="stylesheet" href="style.css" />
-	</head>
-	<body>
-		<h1>Chat pour les Passionné(e)s de Fourmis</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat des Fourmis</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+  </head>
+  <body>
+    <h1>Chat pour les Passionné(e)s de Fourmis</h1>
 
-		<div class="chat-box">
-			<div class="messages" id="messages"></div>
-			<div class="input-box">
-				<input type="text" id="username" placeholder="Nom d'utilisateur" />
-				<input type="text" id="message" placeholder="Votre message..." />
-				<button type="button" id="sendButton">Envoyer</button>
-			</div>
-		</div>
+    <div class="chat-box">
+      <div class="messages" id="messages"></div>
+      <div class="input-box">
+        <input type="text" id="username" placeholder="Nom d'utilisateur" />
+        <input type="text" id="message" placeholder="Votre message..." />
+        <button type="button" id="sendButton">Envoyer</button>
+      </div>
+    </div>
+    <script>
+      document
+        .getElementById("sendButton")
+        .addEventListener("click", sendMessage);
+    </script>
+    <script>
+      const socket = io("http://localhost:3260");
 
-		<script src="/socket.io/socket.io.js"></script>
-		<script>
-			document
-				.getElementById("sendButton")
-				.addEventListener("click", sendMessage);
-		</script>
-		<script>
-			const socket = io();
+      socket.on("connect", () => {
+        console.log("Connected to server:", socket.id);
+      });
 
-			socket.on("previousMessages", (messages) => {
-				const messagesDiv = document.getElementById("messages");
-				messages.forEach((message) => {
-					const messageElem = document.createElement("div");
-					messageElem.classList.add("message");
-					messageElem.textContent = `${message.username}: ${message.content}`;
-					messagesDiv.appendChild(messageElem);
-				});
-			});
-
-			socket.on("newMessage", (message) => {
-				const messagesDiv = document.getElementById("messages");
-				const messageElem = document.createElement("div");
-				messageElem.textContent = `${message.username}: ${message.content}`;
-				messagesDiv.appendChild(messageElem);
-				messagesDiv.scrollTop = messagesDiv.scrollHeight;
-			});
-
-			function sendMessage() {
-				const username = document.getElementById("username").value;
-				const message = document.getElementById("message").value;
-
-				if (username && message) {
-					socket.emit("chatMessage", { username, content: message });
-					document.getElementById("message").value = "";
-				} else {
-					console.log("Veuillez entrer un nom d'utilisateur et un message.");
-				}
-			}
-		</script>
-	</body>
+      socket.on("connect_error", (err) => {
+        console.error("Connection error:", err);
+      });
+      //to work
+    </script>
+  </body>
 </html>
