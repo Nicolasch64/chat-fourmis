@@ -8,17 +8,23 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<h1>Chat pour les Passionnés de Fourmis</h1>
+		<h1>Chat pour les Passionné(e)s de Fourmis</h1>
 
 		<div class="chat-box">
 			<div class="messages" id="messages"></div>
 			<div class="input-box">
 				<input type="text" id="username" placeholder="Nom d'utilisateur" />
 				<input type="text" id="message" placeholder="Votre message..." />
-				<button onclick="sendMessage()">Envoyer</button>
+				<button type="button" id="sendButton">Envoyer</button>
 			</div>
 		</div>
+
 		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			document
+				.getElementById("sendButton")
+				.addEventListener("click", sendMessage);
+		</script>
 		<script>
 			const socket = io();
 
@@ -26,6 +32,7 @@
 				const messagesDiv = document.getElementById("messages");
 				messages.forEach((message) => {
 					const messageElem = document.createElement("div");
+					messageElem.classList.add("message");
 					messageElem.textContent = `${message.username}: ${message.content}`;
 					messagesDiv.appendChild(messageElem);
 				});
@@ -36,6 +43,7 @@
 				const messageElem = document.createElement("div");
 				messageElem.textContent = `${message.username}: ${message.content}`;
 				messagesDiv.appendChild(messageElem);
+				messagesDiv.scrollTop = messagesDiv.scrollHeight;
 			});
 
 			function sendMessage() {
