@@ -2,7 +2,10 @@ const { Socket } = require("dgram");
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
+
 const cors = require("cors");
+
+const connectDB = require("./database");
 
 const userRoutes = require("./Routes/userRoutes");
 const chatRoutes = require("./Routes/chatRoutes");
@@ -11,6 +14,8 @@ const messageRoutes = require("./Routes/messageRoutes");
 const app = express();
 const port = 3260;
 const server = http.createServer(app);
+
+connectDB();
 
 app.use(express.json());
 app.use(cors());
@@ -24,9 +29,9 @@ const io = new Server(server, {
   },
 });
 
-app.use("/messages", messageRoutes);
-app.use("/chat", chatRoutes);
-app.use("/users", userRoutes);
+app.use("", messageRoutes);
+app.use("", chatRoutes);
+app.use("", userRoutes);
 
 io.on("connection", async (socket) => {
   try {
@@ -59,5 +64,5 @@ io.on("connection", async (socket) => {
 });
 
 server.listen(port, () => {
-  console.info("serveur demaree", "http://localhost:3260");
+  console.info("serveur demaree", `http://localhost:${port}`);
 });
