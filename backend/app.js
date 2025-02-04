@@ -26,6 +26,7 @@ io.on("connection", async (socket) => {
       } else {
         console.info("user is offline");
       }
+      //logique pour plusieurs
     });
 
     socket.on("disconnect", () => {
