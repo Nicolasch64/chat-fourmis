@@ -1,12 +1,14 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="fr">
+
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Chat des Fourmis</title>
 		<link rel="stylesheet" href="style.css" />
 	</head>
+
 	<body>
 		<h1>Chat pour les Passionné(e)s de Fourmis</h1>
 
@@ -26,7 +28,7 @@
 				.addEventListener("click", sendMessage);
 		</script>
 		<script>
-			const socket = io();
+			const socket = io("http://localhost:3000");
 
 			socket.on("previousMessages", (messages) => {
 				const messagesDiv = document.getElementById("messages");
@@ -59,4 +61,5 @@
 			}
 		</script>
 	</body>
+
 </html>
