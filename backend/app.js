@@ -1,7 +1,6 @@
-const { Socket } = require("dgram");
 const express = require("express");
 const http = require("http");
-const { Server } = require("socket.io");
+const socketIo = require("socket.io");
 
 const cors = require("cors");
 
@@ -22,10 +21,12 @@ app.use(cors());
 
 let activeUsers = [];
 
-const io = new Server(server, {
+const io = socketIo(server, {
   cors: {
-    origin: "http://127.0.0.1:5500",
+    origin: "*",
     methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true,
   },
 });
 
